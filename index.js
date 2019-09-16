@@ -1,6 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
+var bcrypt = require('bcryptjs');
 
 const db = require('./database/dbConfig.js');
 const Users = require('./users/users-model.js');
@@ -51,6 +52,24 @@ server.get('/api/users', (req, res) => {
     })
     .catch(err => res.send(err));
 });
+
+server.get('/api/hash', (req, res) => {
+  const name = req.query.name
+  
+  // SYNC
+  // const salt = bcrypt.genSaltSync(10)
+  // const hash = bcrypt.hashSync("B4c0/\/", salt)
+  // res.send(`the hash for ${name} is ${hash}`)
+
+  // ASYNC
+  bcrypt.genSalt(10, function(err, salt) {
+    bcrypt.hash("B4c0/\/", salt, function(err, hash) {
+      res.send(`the hash for ${name} is ${hash}`)
+    })
+  })
+
+  
+})
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`\n** Running on port ${port} **\n`));
